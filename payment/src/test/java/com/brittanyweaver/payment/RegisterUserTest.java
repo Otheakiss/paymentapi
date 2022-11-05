@@ -4,6 +4,7 @@ import com.brittanyweaver.payment.user.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
@@ -22,7 +23,7 @@ public class RegisterUserTest {
         //user Brittany doesn't exist
         RestTemplate restTemplate = new RestTemplate();
         HttpStatusCodeException e = assertThrows(HttpStatusCodeException.class, () -> { restTemplate.getForEntity(String.format(URL, port, "users/Brittany"), String.class); });
-        assertEquals(404, e.getRawStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode());
 
         //make user Brittany
         User brittany = new User();
@@ -30,7 +31,7 @@ public class RegisterUserTest {
         brittany.setName(name);
         String email = "BrittanyWeaver13@gmail.com";
         brittany.setEmail(email);
-        User user = restTemplate.postForObject(String.format(URL, port, "users/Brittany"), brittany, User.class);
+        User user = restTemplate.postForObject(String.format(URL, port, "users/"), brittany, User.class);
         assertEquals(brittany.getName(), user.getName());
         assertEquals(name, user.getName());
         assertEquals(brittany.getEmail(), user.getEmail());
